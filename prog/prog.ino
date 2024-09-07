@@ -24,14 +24,15 @@
 #include "NewPing.h"
 
 const int RED_LED = 5;
-const int BLUE_LED = 6;
-const int GREEN_LED = 7;
 
 #define TRIGGER_PIN 9
 #define ECHO_PIN 10
 
 // Maximum distance we want to ping for (in centimeters).
-#define MAX_DISTANCE 400  
+#define MAX_DISTANCE 400 
+
+// Water is approaching empty if more than this many cm away from sensor
+#define EMPTY_DISTANCE 10
 
 // NewPing setup of pins and maximum distance.
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
@@ -43,8 +44,6 @@ void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(RED_LED, OUTPUT);
-  pinMode(BLUE_LED, OUTPUT);
-  pinMode(GREEN_LED, OUTPUT);
   Serial.begin(9600);
 };
 
@@ -52,10 +51,19 @@ void setup() {
 void loop() {
   // Send ping, get distance in cm
   duration = sonar.ping_median(iterations);  
-  // Send results to Serial Monitor
-  Serial.print("Duration = ");
 
-  Serial.println(duration);
+  int distance = sonar.convert_cm(duration);
+  
+  // Send results to Serial Monitor
+  Serial.print(" cm:");
+  Serial.println(distance);
+
+  if (distance > EMPTY_DISTANCE) {
+    digitalWrite(RED_LED, HIGH);
+  } else {
+    digitalWrite(RED_LED, LOW);
+  }
+  delay(250);
 //  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
 //  delay(250);                       // wait for a second
 //  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
@@ -71,5 +79,5 @@ void loop() {
 //  digitalWrite(BLUE_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
 //  delay(250);                       // wait for a second
 //  digitalWrite(BLUE_LED, LOW);    // turn the LED off by making the voltage LOW
-  delay(500);                       // wait for a second
+//  delay(250);                       // wait for a second
 }
