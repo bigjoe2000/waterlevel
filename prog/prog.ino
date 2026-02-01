@@ -1,7 +1,12 @@
 /*
-  Blink
+  Water Level
 
-  Turns an LED on for one second, then off for one second, repeatedly.
+  Uses a PNG sensor to detect the distance to the water level
+
+  If water level is greater then EMPTY_DISTANCE cm away, turn on the LED
+
+  Otherwise, LED should be off
+
 
   Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
   it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
@@ -23,8 +28,7 @@
 */
 #include "NewPing.h"
 
-const int RED_LED = 5;
-
+#define RED_LED_PIN 5
 #define TRIGGER_PIN 9
 #define ECHO_PIN 10
 
@@ -32,7 +36,7 @@ const int RED_LED = 5;
 #define MAX_DISTANCE 400 
 
 // Water is approaching empty if more than this many cm away from sensor
-#define EMPTY_DISTANCE 10
+#define EMPTY_DISTANCE 11
 
 // NewPing setup of pins and maximum distance.
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
@@ -43,7 +47,7 @@ int iterations = 5;
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(RED_LED, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
   Serial.begin(9600);
 };
 
@@ -59,25 +63,9 @@ void loop() {
   Serial.println(distance);
 
   if (distance > EMPTY_DISTANCE) {
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(RED_LED_PIN, HIGH);
   } else {
-    digitalWrite(RED_LED, LOW);
+    digitalWrite(RED_LED_PIN, LOW);
   }
   delay(250);
-//  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  delay(250);                       // wait for a second
-//  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-//  delay(250);                       // wait for a second
-//  digitalWrite(RED_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  delay(250);                       // wait for a second
-//  digitalWrite(RED_LED, LOW);    // turn the LED off by making the voltage LOW
-//  delay(250);                       // wait for a second
-//  digitalWrite(GREEN_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  delay(500);                       // wait for a second
-//  digitalWrite(GREEN_LED, LOW);    // turn the LED off by making the voltage LOW
-//  delay(500);                       // wait for a second
-//  digitalWrite(BLUE_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  delay(250);                       // wait for a second
-//  digitalWrite(BLUE_LED, LOW);    // turn the LED off by making the voltage LOW
-//  delay(250);                       // wait for a second
 }
